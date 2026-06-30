@@ -161,6 +161,105 @@
       transition: background .2s, transform .2s;
     }
     .dot.active { background: #2f5d44; transform: scale(1.35); }
+
+    /* ─── FLOWER SIGN ─── */
+    .flower-sign {
+      display: flex; flex-direction: column; align-items: center;
+      margin-top: 1.8rem; cursor: pointer;
+      animation: signSway 3s ease-in-out infinite;
+      transform-origin: top center;
+      user-select: none;
+    }
+    @keyframes signSway {
+      0%,100% { transform: rotate(-1.5deg); }
+      50%      { transform: rotate(1.5deg); }
+    }
+    .flower-sign:hover .sign-board { background: #f0ede0; transform: scale(1.04); }
+    .sign-post {
+      width: 5px; height: 28px;
+      background: linear-gradient(180deg, #8b6340, #6b4c2a);
+      border-radius: 3px;
+    }
+    .sign-board {
+      background: #fdf8ee;
+      border: 2px solid #c9a060;
+      border-radius: 8px;
+      padding: .45rem 1.1rem;
+      font-size: 13px; font-style: italic;
+      color: #5c4020; letter-spacing: .02em;
+      box-shadow: 0 3px 10px rgba(0,0,0,.12);
+      transition: background .2s, transform .2s;
+      display: flex; align-items: center; gap: .4rem;
+    }
+    .sign-emoji { font-style: normal; font-size: 14px; }
+
+    /* ─── FLOWER OVERLAY ─── */
+    .flower-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.45);
+      z-index: 998;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; visibility: hidden;
+      transition: opacity .4s ease, visibility .4s ease;
+    }
+    .flower-overlay.open { opacity: 1; visibility: visible; }
+
+    .flower-modal {
+      background: linear-gradient(160deg, #fff9f9, #fff4fb);
+      border-radius: 20px;
+      padding: 2rem 2rem 1.5rem;
+      width: min(360px, 90vw);
+      box-shadow: 0 24px 60px rgba(0,0,0,.25);
+      position: relative;
+      transform: scale(.7) translateY(30px);
+      transition: transform .5s cubic-bezier(.34,1.56,.64,1);
+      text-align: center;
+    }
+    .flower-overlay.open .flower-modal {
+      transform: scale(1) translateY(0);
+    }
+    .flower-close {
+      position: absolute; top: 12px; right: 14px;
+      background: none; border: none;
+      font-size: 16px; color: #aaa; cursor: pointer;
+      line-height: 1;
+    }
+    .flower-close:hover { color: #666; }
+
+    .bouquet-svg {
+      width: 100%; max-width: 300px;
+      animation: bouquetPop .6s cubic-bezier(.34,1.56,.64,1) .15s both;
+    }
+    @keyframes bouquetPop {
+      from { transform: scale(.5) translateY(20px); opacity: 0; }
+      to   { transform: scale(1) translateY(0);      opacity: 1; }
+    }
+
+    .g-flower { animation: flowerBloom .5s cubic-bezier(.34,1.56,.64,1) both; }
+    #gf1 { animation-delay: .2s; }
+    #gf2 { animation-delay: .3s; }
+    #gf3 { animation-delay: .35s; }
+    #gf4 { animation-delay: .4s; }
+    #gf5 { animation-delay: .45s; }
+    @keyframes flowerBloom {
+      from { transform: scale(0); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+
+    .flower-msg {
+      margin-top: .8rem;
+      animation: fadeUp .5s ease .6s both;
+    }
+    @keyframes fadeUp {
+      from { transform: translateY(12px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+    .flower-quote {
+      font-size: 15px; font-style: italic;
+      color: #5c3a4a; font-weight: 600;
+      line-height: 1.5;
+    }
+    .flower-hearts { font-size: 18px; margin-top: .5rem; }
   </style>
 </head>
 <body>
@@ -181,7 +280,7 @@
         <circle cx="67" cy="22" r="5" fill="#fffdf6"/>
         <circle cx="68.5" cy="21" r="2" fill="#1a3322"/>
         <path d="M42 119 L38 133 M56 121 L54 135 M72 121 L72 134"
-              stroke="#4a8c63" stroke-width="8" stroke-linecap="round"/>
+               stroke="#4a8c63" stroke-width="8" stroke-linecap="round"/>
       </svg>
     </div>
 
@@ -222,7 +321,7 @@
             <circle cx="65" cy="12" r="4.5" fill="#fffdf6"/>
             <circle cx="66.5" cy="11" r="1.8" fill="#234633"/>
             <path d="M38 93 L35 106 M52 95 L50 108 M68 95 L68 107"
-                  stroke="#4a8c63" stroke-width="7" stroke-linecap="round"/>
+                   stroke="#4a8c63" stroke-width="7" stroke-linecap="round"/>
           </svg>
           <div style="font-size:13px;color:#5c5230;font-style:italic;">I love you, Nica. 🌿</div>
           <div style="font-size:10px;color:#a39a72;margin-top:.3rem;">Happy Graduation ✨</div>
@@ -344,6 +443,173 @@
       </div>
       <div class="nav-btn" onclick="goNext()">&#8594;</div>
     </div>
+
+    <!-- flower sign -->
+    <div class="flower-sign" onclick="openFlowers()">
+      <div class="sign-post"></div>
+      <div class="sign-board">
+        <span class="sign-emoji">🌸</span>
+        click for flowers
+        <span class="sign-emoji">🌸</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- flower popup -->
+  <div class="flower-overlay" id="flowerOverlay" onclick="closeFlowers()">
+    <div class="flower-modal" onclick="event.stopPropagation()">
+      <button class="flower-close" onclick="closeFlowers()">✕</button>
+      <svg class="bouquet-svg" viewBox="0 0 340 320" xmlns="http://www.w3.org/2000/svg">
+
+        <!-- stems -->
+        <path d="M170 310 Q155 260 145 210" stroke="#4a7c3f" stroke-width="5" stroke-linecap="round" fill="none"/>
+        <path d="M170 310 Q170 260 170 205" stroke="#4a7c3f" stroke-width="5" stroke-linecap="round" fill="none"/>
+        <path d="M170 310 Q185 260 195 210" stroke="#4a7c3f" stroke-width="5" stroke-linecap="round" fill="none"/>
+        <path d="M170 310 Q140 255 125 215" stroke="#5a8c4a" stroke-width="4" stroke-linecap="round" fill="none"/>
+        <path d="M170 310 Q200 255 215 215" stroke="#5a8c4a" stroke-width="4" stroke-linecap="round" fill="none"/>
+
+        <!-- leaves -->
+        <ellipse cx="148" cy="258" rx="14" ry="7" fill="#4a7c3f" transform="rotate(-35 148 258)"/>
+        <ellipse cx="192" cy="258" rx="14" ry="7" fill="#4a7c3f" transform="rotate(35 192 258)"/>
+
+        <!-- ribbon -->
+        <path d="M140 295 Q170 285 200 295 Q185 305 170 300 Q155 305 140 295Z" fill="#f4a7b9"/>
+        <path d="M140 295 Q125 285 120 275 Q135 278 140 295Z" fill="#f4a7b9"/>
+        <path d="M200 295 Q215 285 220 275 Q205 278 200 295Z" fill="#f4a7b9"/>
+
+        <!-- wrapping paper -->
+        <path d="M135 300 L125 240 L215 240 L205 300 Z" fill="#fff9c4" opacity=".85"/>
+        <path d="M125 240 L215 240" stroke="#f4d03f" stroke-width="1.5" fill="none"/>
+
+        <!-- GERBERA 1 — coral/red, center -->
+        <g transform="translate(170,180)" class="g-flower" id="gf1">
+          <g id="petals1">
+            <ellipse cx="0" cy="-30" rx="6" ry="16" fill="#e8472a" transform="rotate(0)"/>
+            <ellipse cx="0" cy="-30" rx="6" ry="16" fill="#e8472a" transform="rotate(30)"/>
+            <ellipse cx="0" cy="-30" rx="6" ry="16" fill="#e8472a" transform="rotate(60)"/>
+            <ellipse cx="0" cy="-30" rx="6" ry="16" fill="#e8472a" transform="rotate(90)"/>
+            <ellipse cx="0" cy="-30" rx="6" ry="16" fill="#e8472a" transform="rotate(120)"/>
+            <ellipse cx="0" cy="-30" rx="6" ry="16" fill="#e8472a" transform="rotate(150)"/>
+            <ellipse cx="0" cy="-30" rx="6" ry="16" fill="#e8472a" transform="rotate(180)"/>
+            <ellipse cx="0" cy="-30" rx="6" ry="16" fill="#e8472a" transform="rotate(210)"/>
+            <ellipse cx="0" cy="-30" rx="6" ry="16" fill="#e8472a" transform="rotate(240)"/>
+            <ellipse cx="0" cy="-30" rx="6" ry="16" fill="#e8472a" transform="rotate(270)"/>
+            <ellipse cx="0" cy="-30" rx="6" ry="16" fill="#e8472a" transform="rotate(300)"/>
+            <ellipse cx="0" cy="-30" rx="6" ry="16" fill="#e8472a" transform="rotate(330)"/>
+            <!-- inner ring -->
+            <ellipse cx="0" cy="-18" rx="4" ry="9" fill="#c0341a" transform="rotate(15)"/>
+            <ellipse cx="0" cy="-18" rx="4" ry="9" fill="#c0341a" transform="rotate(45)"/>
+            <ellipse cx="0" cy="-18" rx="4" ry="9" fill="#c0341a" transform="rotate(75)"/>
+            <ellipse cx="0" cy="-18" rx="4" ry="9" fill="#c0341a" transform="rotate(105)"/>
+            <ellipse cx="0" cy="-18" rx="4" ry="9" fill="#c0341a" transform="rotate(135)"/>
+            <ellipse cx="0" cy="-18" rx="4" ry="9" fill="#c0341a" transform="rotate(165)"/>
+            <ellipse cx="0" cy="-18" rx="4" ry="9" fill="#c0341a" transform="rotate(195)"/>
+            <ellipse cx="0" cy="-18" rx="4" ry="9" fill="#c0341a" transform="rotate(225)"/>
+            <ellipse cx="0" cy="-18" rx="4" ry="9" fill="#c0341a" transform="rotate(255)"/>
+            <ellipse cx="0" cy="-18" rx="4" ry="9" fill="#c0341a" transform="rotate(285)"/>
+            <ellipse cx="0" cy="-18" rx="4" ry="9" fill="#c0341a" transform="rotate(315)"/>
+            <ellipse cx="0" cy="-18" rx="4" ry="9" fill="#c0341a" transform="rotate(345)"/>
+          </g>
+          <circle cx="0" cy="0" r="12" fill="#3d2000"/>
+          <circle cx="0" cy="0" r="8"  fill="#5c3200"/>
+          <circle cx="-3" cy="-3" r="2.5" fill="#7a4500" opacity=".7"/>
+        </g>
+
+        <!-- GERBERA 2 — yellow/orange, left -->
+        <g transform="translate(120,195)" class="g-flower" id="gf2">
+          <g>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f5a623" transform="rotate(0)"/>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f5a623" transform="rotate(30)"/>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f5a623" transform="rotate(60)"/>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f5a623" transform="rotate(90)"/>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f5a623" transform="rotate(120)"/>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f5a623" transform="rotate(150)"/>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f5a623" transform="rotate(180)"/>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f5a623" transform="rotate(210)"/>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f5a623" transform="rotate(240)"/>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f5a623" transform="rotate(270)"/>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f5a623" transform="rotate(300)"/>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f5a623" transform="rotate(330)"/>
+            <ellipse cx="0" cy="-17" rx="3.5" ry="8" fill="#e07b00" transform="rotate(15)"/>
+            <ellipse cx="0" cy="-17" rx="3.5" ry="8" fill="#e07b00" transform="rotate(75)"/>
+            <ellipse cx="0" cy="-17" rx="3.5" ry="8" fill="#e07b00" transform="rotate(135)"/>
+            <ellipse cx="0" cy="-17" rx="3.5" ry="8" fill="#e07b00" transform="rotate(195)"/>
+            <ellipse cx="0" cy="-17" rx="3.5" ry="8" fill="#e07b00" transform="rotate(255)"/>
+            <ellipse cx="0" cy="-17" rx="3.5" ry="8" fill="#e07b00" transform="rotate(315)"/>
+          </g>
+          <circle cx="0" cy="0" r="11" fill="#3d2000"/>
+          <circle cx="0" cy="0" r="7"  fill="#5c3200"/>
+        </g>
+
+        <!-- GERBERA 3 — pink, right -->
+        <g transform="translate(220,195)" class="g-flower" id="gf3">
+          <g>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f06292" transform="rotate(0)"/>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f06292" transform="rotate(30)"/>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f06292" transform="rotate(60)"/>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f06292" transform="rotate(90)"/>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f06292" transform="rotate(120)"/>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f06292" transform="rotate(150)"/>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f06292" transform="rotate(180)"/>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f06292" transform="rotate(210)"/>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f06292" transform="rotate(240)"/>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f06292" transform="rotate(270)"/>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f06292" transform="rotate(300)"/>
+            <ellipse cx="0" cy="-28" rx="5.5" ry="15" fill="#f06292" transform="rotate(330)"/>
+            <ellipse cx="0" cy="-17" rx="3.5" ry="8" fill="#c2185b" transform="rotate(15)"/>
+            <ellipse cx="0" cy="-17" rx="3.5" ry="8" fill="#c2185b" transform="rotate(75)"/>
+            <ellipse cx="0" cy="-17" rx="3.5" ry="8" fill="#c2185b" transform="rotate(135)"/>
+            <ellipse cx="0" cy="-17" rx="3.5" ry="8" fill="#c2185b" transform="rotate(195)"/>
+            <ellipse cx="0" cy="-17" rx="3.5" ry="8" fill="#c2185b" transform="rotate(255)"/>
+            <ellipse cx="0" cy="-17" rx="3.5" ry="8" fill="#c2185b" transform="rotate(315)"/>
+          </g>
+          <circle cx="0" cy="0" r="11" fill="#3d2000"/>
+          <circle cx="0" cy="0" r="7"  fill="#5c3200"/>
+        </g>
+
+        <!-- GERBERA 4 — peach, far left -->
+        <g transform="translate(88,215)" class="g-flower" id="gf4">
+          <g>
+            <ellipse cx="0" cy="-24" rx="5" ry="13" fill="#ffb347" transform="rotate(0)"/>
+            <ellipse cx="0" cy="-24" rx="5" ry="13" fill="#ffb347" transform="rotate(36)"/>
+            <ellipse cx="0" cy="-24" rx="5" ry="13" fill="#ffb347" transform="rotate(72)"/>
+            <ellipse cx="0" cy="-24" rx="5" ry="13" fill="#ffb347" transform="rotate(108)"/>
+            <ellipse cx="0" cy="-24" rx="5" ry="13" fill="#ffb347" transform="rotate(144)"/>
+            <ellipse cx="0" cy="-24" rx="5" ry="13" fill="#ffb347" transform="rotate(180)"/>
+            <ellipse cx="0" cy="-24" rx="5" ry="13" fill="#ffb347" transform="rotate(216)"/>
+            <ellipse cx="0" cy="-24" rx="5" ry="13" fill="#ffb347" transform="rotate(252)"/>
+            <ellipse cx="0" cy="-24" rx="5" ry="13" fill="#ffb347" transform="rotate(288)"/>
+            <ellipse cx="0" cy="-24" rx="5" ry="13" fill="#ffb347" transform="rotate(324)"/>
+          </g>
+          <circle cx="0" cy="0" r="10" fill="#3d2000"/>
+          <circle cx="0" cy="0" r="6.5" fill="#5c3200"/>
+        </g>
+
+        <!-- GERBERA 5 — red-pink, far right -->
+        <g transform="translate(252,215)" class="g-flower" id="gf5">
+          <g>
+            <ellipse cx="0" cy="-24" rx="5" ry="13" fill="#e91e63" transform="rotate(0)"/>
+            <ellipse cx="0" cy="-24" rx="5" ry="13" fill="#e91e63" transform="rotate(36)"/>
+            <ellipse cx="0" cy="-24" rx="5" ry="13" fill="#e91e63" transform="rotate(72)"/>
+            <ellipse cx="0" cy="-24" rx="5" ry="13" fill="#e91e63" transform="rotate(108)"/>
+            <ellipse cx="0" cy="-24" rx="5" ry="13" fill="#e91e63" transform="rotate(144)"/>
+            <ellipse cx="0" cy="-24" rx="5" ry="13" fill="#e91e63" transform="rotate(180)"/>
+            <ellipse cx="0" cy="-24" rx="5" ry="13" fill="#e91e63" transform="rotate(216)"/>
+            <ellipse cx="0" cy="-24" rx="5" ry="13" fill="#e91e63" transform="rotate(252)"/>
+            <ellipse cx="0" cy="-24" rx="5" ry="13" fill="#e91e63" transform="rotate(288)"/>
+            <ellipse cx="0" cy="-24" rx="5" ry="13" fill="#e91e63" transform="rotate(324)"/>
+          </g>
+          <circle cx="0" cy="0" r="10" fill="#3d2000"/>
+          <circle cx="0" cy="0" r="6.5" fill="#5c3200"/>
+        </g>
+
+      </svg>
+
+      <div class="flower-msg">
+        <div class="flower-quote">"You'll always be my surest."</div>
+        <div class="flower-hearts">🌸 💚 🌸</div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -393,6 +659,15 @@
     }
 
     setZ(-1);
+
+    /* ─── FLOWER POPUP LOGIC ─── */
+    function openFlowers() {
+      document.getElementById('flowerOverlay').classList.add('open');
+    }
+
+    function closeFlowers() {
+      document.getElementById('flowerOverlay').classList.remove('open');
+    }
 
     /* ─── CONFETTI ─── */
     var pieces = ['🎉','✨','🎊','🦕','🎓','💚','🌿','⭐','💛','🎈'];
